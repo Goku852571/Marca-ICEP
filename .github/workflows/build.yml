@@ -1,0 +1,31 @@
+name: Build Mac
+
+on: [push]
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Instalar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: |
+          pip install pyinstaller pypdf Pillow reportlab pdf2image
+
+      - name: Instalar poppler
+        run: brew install poppler
+
+      - name: Compilar ejecutable Mac
+        run: |
+          pyinstaller --onefile --windowed --name "AquaMark" Marca.py
+
+      - name: Subir ejecutable
+        uses: actions/upload-artifact@v4
+        with:
+          name: AquaMark-Mac
+          path: dist/AquaMark
